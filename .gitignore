@@ -31,3 +31,8 @@ dist/
 
 # typescript
 .tsbuildinfo
+
+# IDEs and editors
+.vscode/
+.idea/
+*.suo
