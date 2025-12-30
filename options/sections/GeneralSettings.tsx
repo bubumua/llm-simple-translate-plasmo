@@ -12,30 +12,30 @@ export const GeneralSettings = () => {
         <div className="space-y-8 animate-in fade-in duration-300">
             {/* 1. 语言设置 */}
             <section>
-                <h3 className="text-lg font-medium mb-4 text-gray-800">翻译语言</h3>
-                <div className="bg-gray-50/50 p-5 rounded-xl border border-gray-100 grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 items-end">
+                <h3 className="text-lg font-medium mb-4 text-foreground">翻译语言</h3>
+                <div className="bg-muted/30 p-5 rounded-xl border grid grid-cols-1 md:grid-cols-[1fr,auto,1fr] gap-4 items-end">
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-600">首选语言 (Native)</label>
+                        <label className="text-sm font-medium text-muted-foreground">首选语言 (Native)</label>
                         <select
                             value={settings.targetLang1}
                             onChange={(e) => setSettings({ ...settings, targetLang1: e.target.value })}
-                            className="w-full h-10 rounded-md border-gray-300 border bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                         >
                             {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
                         </select>
                     </div>
 
-                    <div className="flex justify-center pb-2 text-gray-400">
+                    <div className="flex justify-center pb-2 text-muted-foreground">
                         <Repeat size={20} />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-600">第二语言 (Foreign)</label>
+                        <label className="text-sm font-medium text-muted-foreground">第二语言 (Foreign)</label>
                         <select
                             value={settings.targetLang2}
                             onChange={(e) => setSettings({ ...settings, targetLang2: e.target.value })}
-                            className="w-full h-10 rounded-md border-gray-300 border bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                            className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                         >
                             {LANGUAGES.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
                         </select>
@@ -48,19 +48,19 @@ export const GeneralSettings = () => {
                         id="autoSwap"
                         checked={settings.autoSwapLang}
                         onChange={(e) => setSettings({ ...settings, autoSwapLang: e.target.checked })}
-                        className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        className="w-4 h-4 text-primary rounded border-input focus:ring-primary"
                     />
-                    <label htmlFor="autoSwap" className="text-sm text-gray-600 select-none cursor-pointer">
+                    <label htmlFor="autoSwap" className="text-sm text-muted-foreground select-none cursor-pointer">
                         智能互译：如果检测到原文是首选语言，自动翻译为第二语言。
                     </label>
                 </div>
             </section>
 
-            <hr className="border-gray-100" />
+            <hr className="border-border" />
 
             {/* 2. 主题设置 */}
             <section>
-                <h3 className="text-lg font-medium mb-4 text-gray-800">界面外观</h3>
+                <h3 className="text-lg font-medium mb-4 text-foreground">界面外观</h3>
                 <div className="grid grid-cols-3 gap-4">
                     {[
                         { val: 'light', label: '浅色', icon: Sun },
@@ -87,23 +87,23 @@ export const GeneralSettings = () => {
             {/* 3. API 策略 */}
             <section>
                 <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-lg font-medium text-gray-800">API 策略</h3>
+                    <h3 className="text-lg font-medium text-foreground">API 策略</h3>
                 </div>
-                <div className="bg-white border rounded-lg p-4 flex items-start gap-3">
+                <div className="bg-card border rounded-lg p-4 flex items-start gap-3">
                     <div className="pt-0.5">
                         <input
                             type="checkbox"
                             id="autoSwitch"
                             checked={settings.autoSwitchApi}
                             onChange={(e) => setSettings({ ...settings, autoSwitchApi: e.target.checked })}
-                            className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500 mt-1"
+                            className="w-4 h-4 text-primary rounded border-input focus:ring-primary mt-1"
                         />
                     </div>
                     <div>
-                        <label htmlFor="autoSwitch" className="font-medium text-sm text-gray-900 block mb-1 cursor-pointer">
+                        <label htmlFor="autoSwitch" className="font-medium text-sm text-foreground block mb-1 cursor-pointer">
                             开启故障转移 (Failover)
                         </label>
-                        <p className="text-xs text-gray-500 leading-relaxed">
+                        <p className="text-xs text-muted-foreground leading-relaxed">
                             当首选 API 请求失败或超时，自动尝试列表中的下一个可用 API。建议您配置至少两个服务提供商。
                         </p>
                     </div>

@@ -98,52 +98,39 @@ export const PromptSettings = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-lg font-medium">系统提示词 (Prompts)</h2>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <h2 className="text-lg font-medium text-foreground">系统提示词 (Prompts)</h2>
+                    <p className="text-xs text-muted-foreground mt-1">
                         自定义 AI 的翻译风格、语气或特定领域的术语处理方式。
                     </p>
                 </div>
                 {!showForm && (
-                    <button
-                        onClick={handleAdd}
-                        className="flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 transition"
-                    >
+                    <button onClick={handleAdd} className="flex items-center gap-1 text-sm bg-primary text-primary-foreground px-3 py-1.5 rounded hover:bg-primary/90 transition">
                         <Plus size={16} /> 新建提示词
                     </button>
                 )}
             </div>
 
-            {/* List View */}
             {!showForm && (
                 <div className="grid grid-cols-1 gap-4">
                     {settings.prompts.map(prompt => (
-                        <div key={prompt.id} className="bg-white border rounded-lg p-5 hover:shadow-md transition group">
+                        <div key={prompt.id} className="bg-card border rounded-lg p-5 hover:shadow-md transition group">
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="font-medium text-gray-800">{prompt.name}</h3>
+                                    <h3 className="font-medium text-foreground">{prompt.name}</h3>
                                     {prompt.isDefault && (
-                                        <span className="text-[10px] bg-blue-50 text-blue-600 px-2 py-0.5 rounded border border-blue-100">
+                                        <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded border border-primary/20">
                                             系统默认
                                         </span>
                                     )}
                                 </div>
                                 <div className="flex items-center gap-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => handleEdit(prompt.id)}
-                                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
-                                        title="编辑"
-                                    >
+                                    <button onClick={() => handleEdit(prompt.id)} className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded" title="编辑">
                                         <Pencil size={16} />
                                     </button>
                                     {!prompt.isDefault && (
-                                        <button
-                                            onClick={() => handleDelete(prompt.id)}
-                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
-                                            title="删除"
-                                        >
+                                        <button onClick={() => handleDelete(prompt.id)} className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded" title="删除">
                                             <Trash2 size={16} />
                                         </button>
                                     )}
@@ -151,15 +138,15 @@ export const PromptSettings = () => {
                             </div>
 
                             <div className="relative">
-                                <pre className="text-xs text-gray-500 bg-gray-50 p-3 rounded border font-mono whitespace-pre-wrap line-clamp-3 max-h-24 overflow-hidden">
+                                <pre className="text-xs text-muted-foreground bg-muted p-3 rounded border font-mono whitespace-pre-wrap line-clamp-3 max-h-24 overflow-hidden">
                                     {prompt.content}
                                 </pre>
-                                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-gray-50 to-transparent pointer-events-none"></div>
+                                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent pointer-events-none"></div>
                             </div>
-                            <div className="mt-2 text-[10px] text-gray-400 flex items-center gap-2">
-                                <span>ID: {prompt.id.slice(0, 8)}...</span>
+                            <div className="mt-2 text-[10px] text-muted-foreground flex items-center gap-2">
+                                <span>ID: {prompt.id}</span>
                                 {settings.apiList.filter(api => api.promptId === prompt.id).length > 0 && (
-                                    <span className="flex items-center gap-1 text-green-600 bg-green-50 px-1.5 rounded">
+                                    <span className="flex items-center gap-1 text-green-600 bg-green-500/10 px-1.5 rounded">
                                         <Check size={10} /> 正在被使用
                                     </span>
                                 )}
@@ -169,65 +156,41 @@ export const PromptSettings = () => {
                 </div>
             )}
 
-            {/* Editor Form */}
             {showForm && (
-                <div className="border border-blue-100 rounded-xl p-6 bg-white shadow-lg animate-in fade-in slide-in-from-top-4">
+                <div className="border border-primary/20 rounded-xl p-6 bg-card shadow-lg animate-in fade-in slide-in-from-top-4">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="font-semibold text-gray-800">
-                            {editingId ? '编辑提示词' : '新建提示词'}
-                        </h3>
+                        <h3 className="font-semibold text-foreground">{editingId ? '编辑提示词' : '新建提示词'}</h3>
                         {editingId === DEFAULT_PROMPT_ID && (
-                            <button
-                                onClick={() => handleResetDefault(editingId)}
-                                className="text-xs flex items-center gap-1 text-orange-600 hover:text-orange-700 bg-orange-50 px-2 py-1 rounded border border-orange-100"
-                            >
+                            <button onClick={() => handleResetDefault(editingId)} className="text-xs flex items-center gap-1 text-orange-600 hover:text-orange-700 bg-orange-500/10 px-2 py-1 rounded border border-orange-500/20">
                                 <RotateCcw size={12} /> 重置默认内容
                             </button>
                         )}
                     </div>
 
                     <div className="space-y-4">
-                        <Input
-                            label="配置名称"
-                            placeholder="例如: 学术论文翻译 / 代码解释模式"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        />
+                        <Input label="配置名称" placeholder="例如: 学术论文翻译" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700 flex justify-between">
+                            <label className="text-sm font-medium text-foreground flex justify-between">
                                 <span>提示词内容 (System Prompt)</span>
-                                <span className="text-xs text-gray-400 font-normal">支持变量: {"{{to}}"} (目标语言)</span>
+                                <span className="text-xs text-muted-foreground font-normal">支持变量: {"{{to}}"}</span>
                             </label>
                             <textarea
-                                className="w-full h-64 p-4 rounded-md border border-gray-300 font-mono text-sm bg-gray-50 text-gray-800 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-y leading-relaxed"
+                                className="w-full h-64 p-4 rounded-md border border-input font-mono text-sm bg-muted text-foreground focus:ring-2 focus:ring-primary focus:outline-none resize-y leading-relaxed"
                                 value={formData.content}
                                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                placeholder="You are a helper..."
                             />
                         </div>
 
-                        <div className="bg-blue-50 p-3 rounded text-xs text-blue-700 flex items-start gap-2">
+                        <div className="bg-primary/10 p-3 rounded text-xs text-primary flex items-start gap-2">
                             <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-                            <div>
-                                提示：请保留 <code>{"{{to}}"}</code> 占位符，翻译时它会被自动替换为目标语言（如 "Chinese", "English"）。
-                            </div>
+                            <div>提示：请保留 <code>{"{{to}}"}</code> 占位符。</div>
                         </div>
                     </div>
 
                     <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-                        <button
-                            onClick={() => setShowForm(false)}
-                            className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition"
-                        >
-                            取消
-                        </button>
-                        <button
-                            onClick={handleSave}
-                            className="px-6 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm transition"
-                        >
-                            保存
-                        </button>
+                        <button onClick={() => setShowForm(false)} className="px-4 py-2 text-sm text-muted-foreground hover:bg-muted rounded-md transition">取消</button>
+                        <button onClick={handleSave} className="px-6 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 shadow-sm transition">保存</button>
                     </div>
                 </div>
             )}

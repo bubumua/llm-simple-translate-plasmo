@@ -1,4 +1,5 @@
 export type LLMProvider = 'openai' | 'anthropic' | 'gemini' | 'custom';
+export type IconPosition = 'top-left' | 'top' | 'top-right' | 'left' | 'right' | 'bottom-left' | 'bottom' | 'bottom-right';
 
 export interface ApiConfig {
     id: string;
@@ -36,12 +37,25 @@ export interface AppSettings {
     prompts: PromptConfig[];
 
     // 划词 UI 设置
+    iconSize: 32 | 48 | 96 | 128;
     selectionMode: 'icon' | 'panel' | 'off';
-    iconPosition: 'top-right' | 'bottom-right' | 'top-left' | 'bottom-left';
+    iconPosition: IconPosition;
     iconOffset: number;
+
+    // 翻译面板设置
+    panelWidth: number;
+    panelHeight: number;
+    panelFontSize: number;
+    panelInitialPos: 'top' | 'bottom'; // 相对文本位置
 
     // Popup 设置
     popupAutoTranslate: boolean;
+    popupDebounceTime: number;
+
+    // 高级/其他设置
+    historyLimit: number;
+    cacheEnabled: boolean;
+    debugMode: boolean;
 }
 
 // 定义默认的 Prompt 内容
@@ -96,11 +110,14 @@ export const LANGUAGES = [
 // 默认设置常量
 export const DEFAULT_SETTINGS: AppSettings = {
     theme: 'system',
+    // 语言
     targetLang1: 'zh-CN',
     targetLang2: 'en',
     autoSwapLang: true,
+    // API
     apiList: [],
-    autoSwitchApi: false,
+    autoSwitchApi: true,
+    // 提示词
     prompts: [
         {
             id: DEFAULT_PROMPT_ID,
@@ -109,10 +126,22 @@ export const DEFAULT_SETTINGS: AppSettings = {
             isDefault: true
         }
     ],
+    // 划词
     selectionMode: 'icon',
+    iconSize: 48,
     iconPosition: 'top-right',
     iconOffset: 10,
-    popupAutoTranslate: false
+    panelWidth: 300,
+    panelHeight: 200,
+    panelFontSize: 48,
+    panelInitialPos: 'top',
+    // Popup
+    popupAutoTranslate: true,
+    popupDebounceTime: 800,
+    // Advanced
+    historyLimit: 10,
+    cacheEnabled: true,
+    debugMode: false
 }
 
 // [Helper] 安全获取 Prompt 的方法 (防止 ID 失效)

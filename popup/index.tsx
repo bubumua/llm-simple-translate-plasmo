@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react"
 import { useAppSettings } from "~lib/storage"
 import { sendToBackground } from "@plasmohq/messaging"
+import ReactMarkdown from "react-markdown"
 import "~style.css"
 
 function IndexPopup() {

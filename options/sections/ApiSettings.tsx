@@ -97,14 +97,14 @@ function SortableApiItem({
         <div
             ref={setNodeRef}
             style={style}
-            className={`bg-white border rounded-lg p-4 shadow-sm hover:shadow-md transition flex items-center justify-between group ${!api.isEnabled ? 'opacity-60 bg-gray-50' : ''}`}
+            className={`bg-card border rounded-lg p-4 shadow-sm hover:shadow-md transition flex items-center justify-between group ${!api.isEnabled ? 'opacity-60 bg-muted' : ''}`}
         >
             <div className="flex items-center gap-3 overflow-hidden flex-1">
                 {/* 拖拽手柄 */}
                 <div
                     {...attributes}
                     {...listeners}
-                    className="cursor-grab text-gray-300 hover:text-gray-600 touch-none p-1"
+                    className="cursor-grab text-muted-foreground hover:text-foreground touch-none p-1"
                 >
                     <GripVertical size={20} />
                 </div>
@@ -112,20 +112,20 @@ function SortableApiItem({
                 {/* 启用/禁用开关 */}
                 <button
                     onClick={() => onToggle(api.id)}
-                    className={`p-1.5 rounded-full transition-colors ${api.isEnabled ? 'text-green-600 bg-green-50' : 'text-gray-400 bg-gray-100'}`}
+                    className={`p-1.5 rounded-full transition-colors ${api.isEnabled ? 'text-green-600 bg-green-500/10' : 'text-muted-foreground bg-muted'}`}
                     title={api.isEnabled ? "点击禁用" : "点击启用"}
                 >
                     {api.isEnabled ? <Power size={18} /> : <PowerOff size={18} />}
                 </button>
 
                 <div className="min-w-0 flex-1 ml-2">
-                    <div className="font-medium flex items-center gap-2">
+                    <div className="font-medium flex items-center gap-2 text-foreground">
                         <span className="truncate">{api.name}</span>
-                        <span className="text-[10px] uppercase bg-gray-100 px-1.5 py-0.5 rounded text-gray-600 border font-mono">
+                        <span className="text-[10px] uppercase bg-muted px-1.5 py-0.5 rounded text-muted-foreground border font-mono">
                             {api.provider}
                         </span>
                     </div>
-                    <div className="text-xs text-gray-400 font-mono mt-0.5 truncate max-w-[300px]">
+                    <div className="text-xs text-muted-foreground font-mono mt-0.5 truncate max-w-[300px]">
                         {api.model}
                     </div>
                 </div>
@@ -146,7 +146,7 @@ function SortableApiItem({
                         onClick={handleLocalTest}
                         disabled={testState === 'loading'}
                         title="测试连接"
-                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded transition disabled:animate-spin"
+                        className="p-2 text-muted-foreground hover:text-green-600 hover:bg-green-500/10 rounded transition disabled:animate-spin"
                     >
                         {testState === 'loading' ? <Loader2 size={16} /> : <Play size={16} />}
                     </button>
@@ -155,14 +155,14 @@ function SortableApiItem({
                 <button
                     onClick={() => onEdit(api)}
                     title="编辑"
-                    className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded transition"
+                    className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded transition"
                 >
                     <Pencil size={16} />
                 </button>
                 <button
                     onClick={() => onDelete(api.id)}
                     title="删除"
-                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition"
+                    className="p-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded transition"
                 >
                     <Trash2 size={16} />
                 </button>
@@ -273,13 +273,13 @@ export const ApiSettings = () => {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-lg font-medium">API 服务管理</h2>
-                    <p className="text-xs text-gray-500 mt-1">拖拽可调整优先级。启用多个 API 时支持故障自动切换。</p>
+                    <h2 className="text-lg font-medium text-foreground">API 服务管理</h2>
+                    <p className="text-xs text-muted-foreground mt-1">拖拽可调整优先级。启用多个 API 时支持故障自动切换。</p>
                 </div>
                 <button
                     onClick={handleAdd}
                     disabled={showForm}
-                    className="flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1.5 rounded hover:bg-blue-700 disabled:opacity-50 transition"
+                    className="flex items-center gap-1 text-sm bg-primary text-primary-foreground px-3 py-1.5 rounded hover:bg-primary/90 disabled:opacity-50 transition"
                 >
                     <Plus size={16} /> 添加 API
                 </button>
@@ -291,7 +291,7 @@ export const ApiSettings = () => {
                     <SortableContext items={settings.apiList.map(item => item.id)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-3">
                             {settings.apiList.length === 0 && (
-                                <div className="text-center py-12 text-gray-400 border-2 border-dashed border-gray-200 rounded-lg bg-gray-50/50">
+                                <div className="text-center py-12 text-muted-foreground border-2 border-dashed rounded-lg bg-muted/50">
                                     暂无 API 配置，请点击右上角添加。
                                 </div>
                             )}
@@ -312,10 +312,10 @@ export const ApiSettings = () => {
 
             {/* 编辑/新增表单 */}
             {showForm && (
-                <div className="border border-blue-100 rounded-xl p-6 bg-white shadow-lg animate-in fade-in slide-in-from-top-4 relative">
+                <div className="border border-primary/20 rounded-xl p-6 bg-card shadow-lg animate-in fade-in slide-in-from-top-4 relative">
                     <div className="flex justify-between items-center mb-6 border-b pb-4">
-                        <h3 className="font-semibold text-gray-800">{editingId ? '编辑 API' : '新增 API'}</h3>
-                        <button onClick={() => setShowForm(false)} className="text-gray-400 hover:text-gray-600 px-2">✕</button>
+                        <h3 className="font-semibold text-foreground">{editingId ? '编辑 API' : '新增 API'}</h3>
+                        <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground px-2">✕</button>
                     </div>
 
                     <div className="grid grid-cols-2 gap-5">
@@ -327,9 +327,9 @@ export const ApiSettings = () => {
                             />
                         </div>
                         <div className="col-span-2 sm:col-span-1 flex flex-col gap-1.5">
-                            <label className="text-sm font-medium text-gray-700">提供商类型</label>
+                            <label className="text-sm font-medium text-foreground">提供商类型</label>
                             <select
-                                className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                                 value={formData.provider}
                                 onChange={e => setFormData({ ...formData, provider: e.target.value as any })}
                             >
@@ -365,12 +365,12 @@ export const ApiSettings = () => {
                         {/* 提示词选择下拉框 */}
                         <div className="col-span-2">
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-gray-700 flex justify-between">
+                                <label className="text-sm font-medium text-foreground flex justify-between">
                                     <span>关联提示词 (Prompt)</span>
-                                    <span className="text-xs text-blue-600 cursor-pointer hover:underline" onClick={() => alert('请在左侧菜单切换到“AI 提示词”进行管理')}>管理提示词</span>
+                                    <span className="text-xs text-primary cursor-pointer hover:underline" onClick={() => alert('请在左侧菜单切换到“AI 提示词”进行管理')}>管理提示词</span>
                                 </label>
                                 <select
-                                    className="flex h-10 w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground focus:ring-2 focus:ring-primary focus:outline-none"
                                     value={formData.promptId || DEFAULT_PROMPT_ID}
                                     onChange={e => setFormData({ ...formData, promptId: e.target.value })}
                                 >
@@ -380,7 +380,7 @@ export const ApiSettings = () => {
                                         </option>
                                     ))}
                                 </select>
-                                <p className="text-[10px] text-gray-400">
+                                <p className="text-[10px] text-muted-foreground">
                                     该 API 将使用此系统指令进行翻译。
                                 </p>
                             </div>
@@ -398,11 +398,11 @@ export const ApiSettings = () => {
                         <div className="flex gap-3">
                             <button
                                 onClick={handleFormTest}
-                                className="px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 flex items-center gap-2 transition"
+                                className="px-4 py-2 text-sm border bg-background text-foreground rounded-md hover:bg-muted flex items-center gap-2 transition"
                             >
                                 <Play size={14} /> 测试连接
                             </button>
-                            <button onClick={handleSave} className="px-5 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm transition">
+                            <button onClick={handleSave} className="px-5 py-2 text-sm bg-primary text-primary-foreground rounded-md hover:bg-primary/90 shadow-sm transition">
                                 保存
                             </button>
                         </div>
