@@ -19,11 +19,12 @@
     "@plasmohq/messaging": "^0.7.2",
     "@plasmohq/storage": "^1.15.0",
     "clsx": "^2.1.1",
+    "franc-min": "^6.2.0",
     "lucide-react": "^0.562.0",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-markdown": "^10.1.0",
+    "react-markdown": "^8.0.7",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {

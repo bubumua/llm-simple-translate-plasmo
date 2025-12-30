@@ -1,5 +1,4 @@
 export type LLMProvider = 'openai' | 'anthropic' | 'gemini' | 'custom';
-export type IconPosition = 'top-left' | 'top' | 'top-right' | 'left' | 'right' | 'bottom-left' | 'bottom' | 'bottom-right';
 
 export interface ApiConfig {
     id: string;
@@ -20,6 +19,17 @@ export interface PromptConfig {
     isDefault?: boolean;
 }
 
+// 翻译历史项定义
+export interface TranslationHistoryItem {
+    id: string;
+    timestamp: number;
+    sourceText: string;
+    targetText: string;
+    sourceLang?: string;
+    targetLang: string;
+    apiId: string; // 记录用的哪个 API
+}
+
 export interface AppSettings {
     // 界面设置
     theme: 'light' | 'dark' | 'system';
@@ -37,10 +47,11 @@ export interface AppSettings {
     prompts: PromptConfig[];
 
     // 划词 UI 设置
-    iconSize: 32 | 48 | 96 | 128;
     selectionMode: 'icon' | 'panel' | 'off';
-    iconPosition: IconPosition;
-    iconOffset: number;
+    selectionDelay: number;
+    iconSize: 32 | 48 | 96 | 128;
+    iconOffsetX: number;
+    iconOffsetY: number;
 
     // 翻译面板设置
     panelWidth: number;
@@ -51,6 +62,9 @@ export interface AppSettings {
     // Popup 设置
     popupAutoTranslate: boolean;
     popupDebounceTime: number;
+
+    // history
+    history: TranslationHistoryItem[];
 
     // 高级/其他设置
     historyLimit: number;
@@ -128,9 +142,10 @@ export const DEFAULT_SETTINGS: AppSettings = {
     ],
     // 划词
     selectionMode: 'icon',
+    selectionDelay: 300,
     iconSize: 48,
-    iconPosition: 'top-right',
-    iconOffset: 10,
+    iconOffsetX: 10,
+    iconOffsetY: 10,
     panelWidth: 300,
     panelHeight: 200,
     panelFontSize: 48,
@@ -138,6 +153,8 @@ export const DEFAULT_SETTINGS: AppSettings = {
     // Popup
     popupAutoTranslate: true,
     popupDebounceTime: 800,
+    // 默认空历史
+    history: [],
     // Advanced
     historyLimit: 10,
     cacheEnabled: true,
@@ -148,4 +165,20 @@ export const DEFAULT_SETTINGS: AppSettings = {
 export function getPromptContent(promptId: string, prompts: PromptConfig[]): string {
     const prompt = prompts.find(p => p.id === promptId);
     return prompt ? prompt.content : DEFAULT_SYSTEM_PROMPT;
+}
+
+// 定义请求和响应的类型，方便前端推断
+export interface TranslateRequestBody {
+    text: string
+    sourceLang: string
+    targetLang: string
+    signal?: AbortSignal // 可选的取消信号
+}
+
+export interface TranslateResponseBody {
+    status: "streaming" | "completed" | "error"
+    chunk?: string      // 增量文本
+    fullText?: string   // 最终文本
+    errorMsg?: string
+    apiName?: string    // 告知前端用的是哪个 API
 }
