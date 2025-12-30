@@ -1,6 +1,7 @@
 import type { PlasmoMessaging } from "@plasmohq/messaging"
 import { getAppSettings, storage } from "~lib/storage" // [修正] 引用封装好的 storage helper
 import type { ApiConfig, TranslateRequestBody, TranslateResponseBody, TranslationHistoryItem } from "~lib/types"
+import { detectLanguage } from "~lib/lang-detect"
 
 // --- Helper: SSE 解析 (OpenAI 格式) ---
 const parseSSE = (line: string): string | null => {
@@ -27,33 +28,49 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
     if (!text) return
 
     try {
-        // 1. 获取配置
+        // 获取配置
         const settings = await getAppSettings()
         if (settings.debugMode) console.log(settings);
 
-        // --- [新增] 缓存检查逻辑 ---
+        // 检测源语言
+        let detectedSource = sourceLang
+        if (detectedSource === 'auto') {
+            const detected = detectLanguage(text)
+            if (detected !== 'auto') {
+                detectedSource = detected
+            }
+        }
+
+        let finalTarget = targetLang
+        // 处理自动互译 (Auto Swap): 如果检测到的源语言 等于 首选目标语言，且开启了互译 -> 切换到第二目标语言
+        if (settings.autoSwapLang && detectedSource === settings.targetLang1) {
+            finalTarget = settings.targetLang2
+        }
+
+        console.log(`[Translate] Lang: ${detectedSource} -> ${finalTarget} (Swap: ${settings.autoSwapLang})`)
+
+        // 缓存检查逻辑
         if (settings.cacheEnabled) {
             // 简单的匹配逻辑：原文、源语言、目标语言一致
             const cachedItem = settings.history.find(item =>
                 item.sourceText.trim() === text.trim() &&
-                item.targetLang === targetLang &&
-                item.sourceLang === sourceLang
+                item.targetLang === finalTarget 
             )
 
             if (cachedItem) {
                 if (settings.debugMode) console.log(`[Translate] Cache Hit! Returning local result.`)
-                // 模拟流式发送（其实是一次性发完），这样前端不用改代码
-                res.send({
-                    status: "streaming",
+                const resultMessage: TranslateResponseBody = {
+                    status: "completed",
                     chunk: cachedItem.targetText,
+                    fullText: cachedItem.targetText,
                     apiName: "Local Cache"
-                })
-                res.send({ status: "completed" })
-                return // 结束处理
+                }
+                res.send(resultMessage)
+                return 
             }
         }
 
-        // 2. 确定 API 调用顺序 (Failover 逻辑)
+        // 确定 API 调用顺序 (Failover 逻辑)
         let apisToTry: ApiConfig[] = []
 
         if (settings.autoSwitchApi) {

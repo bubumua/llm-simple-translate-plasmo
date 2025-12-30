@@ -37,6 +37,12 @@ function Popup() {
       }
       else if (msg.status === "completed") {
         setIsLoading(false)
+        if (msg.fullText) {
+          setOutputText(msg.fullText)
+        }
+        if (msg.apiName) {
+          setUsedApiName(msg.apiName)
+        }
       }
       else if (msg.status === "error") {
         setIsLoading(false)

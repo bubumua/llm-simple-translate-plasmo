@@ -52,22 +52,26 @@ export const SelectionSettings = () => {
             {settings.selectionMode !== 'off' && (
                 <section className="animate-in fade-in slide-in-from-top-2 border-t border-border pt-6">
                     <h3 className="text-lg font-medium mb-4 text-foreground">响应设置</h3>
-                    <div className="space-y-4 max-w-md">
-                        <div className="flex justify-between items-center">
-                            <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                                <Clock size={16} /> 划词响应延时 (ms)
+                    <div className="space-y-4 max-w-sm">
+                        <div className="space-y-1.5">
+                            <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                                <Clock size={16} className="text-muted-foreground" />
+                                划词响应延时 (ms)
                             </label>
-                            <span className="text-sm font-mono bg-muted text-foreground px-2 py-1 rounded">{settings.selectionDelay}ms</span>
+                            {/* [调整] 改为输入框 */}
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="number" min="0" max="2000" step="50"
+                                    value={settings.selectionDelay}
+                                    onChange={(e) => setSettings({ ...settings, selectionDelay: parseInt(e.target.value) })}
+                                    className="flex-1 h-9 rounded border border-input bg-background px-3 text-sm focus:ring-1 focus:ring-primary"
+                                />
+                                <span className="text-xs text-muted-foreground whitespace-nowrap">毫秒</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                                鼠标抬起后等待多久才显示图标/面板。建议设置 100-300ms 以防止误触。
+                            </p>
                         </div>
-                        <input
-                            type="range" min="0" max="1000" step="50"
-                            value={settings.selectionDelay}
-                            onChange={(e) => setSettings({ ...settings, selectionDelay: parseInt(e.target.value) })}
-                            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
-                        />
-                        <p className="text-xs text-muted-foreground">
-                            鼠标抬起后等待多久才显示图标/面板。设置适当延时可防止误触。
-                        </p>
                     </div>
                 </section>
             )}

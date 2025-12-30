@@ -86,9 +86,10 @@ const PlasmoOverlay = () => {
     const handleMouseEnter = () => { isHoveringRef.current = true }
     const handleMouseLeave = () => { isHoveringRef.current = false }
 
-    // Port 监听
+    // Port 消息监听
     useEffect(() => {
         if (translatePort.data) {
+            setCopied(false)
             const msg = translatePort.data
             if (msg.status === "streaming") {
                 setIsLoading(true)
@@ -96,6 +97,12 @@ const PlasmoOverlay = () => {
                 if (msg.apiName) setApiName(msg.apiName)
             } else if (msg.status === "completed") {
                 setIsLoading(false)
+                if (msg.fullText) {
+                    setTranslation(msg.fullText)
+                }
+                if (msg.apiName) {
+                    setApiName(msg.apiName)
+                }
             } else if (msg.status === "error") {
                 setIsLoading(false)
                 setError(msg.errorMsg || "Translation Error")
@@ -296,32 +303,34 @@ const PlasmoOverlay = () => {
                         minHeight: settings.panelHeight,
                         fontSize: settings.panelFontSize
                     }}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
                 >
                     {/* Header */}
                     <div
                         onMouseDown={startDrag}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
                         className="h-9 bg-gray-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between px-3 cursor-move select-none"
                     >
-                        {/* API indicator */}
+                        {/* API indicator and Copy Button */}
                         <div className="flex items-center gap-2 text-xs font-medium text-gray-500 dark:text-gray-400">
                             {isDragging ? <GripHorizontal size={14} /> : <Sparkles size={14} className="text-blue-600 dark:text-blue-400" />}
+                            {/* API indicator */}
                             <span>{apiName || "LLM Translator"}</span>
+                            {/* Copy Button */}
+                            {!isLoading && translation && (
+                                <div className="flex" style={{ zIndex: 10 }}>
+                                    <button
+                                        onClick={handleCopy}
+                                        className="p-1.5 bg-gray-100 dark:bg-zinc-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition shadow-sm border border-gray-200 dark:border-zinc-700"
+                                        title="复制"
+                                    >
+                                        {copied ? <Check size={14} /> : <Copy size={14} />}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
-                        {/* Copy Button */}
-                        {!isLoading && translation && (
-                            <div className="absolute bottom-2 right-2 flex gap-2">
-                                <button
-                                    onClick={handleCopy}
-                                    className="p-1.5 bg-gray-100 dark:bg-zinc-800 hover:bg-blue-100 dark:hover:bg-blue-900/30 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-md transition shadow-sm border border-gray-200 dark:border-zinc-700"
-                                    title="复制"
-                                >
-                                    {copied ? <Check size={14} /> : <Copy size={14} />}
-                                </button>
-                            </div>
-                        )}
+
 
                         {/* close button */}
                         <div className="flex items-center gap-1">
