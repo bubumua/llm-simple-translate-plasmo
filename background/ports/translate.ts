@@ -16,11 +16,16 @@ const parseSSE = (line: string): string | null => {
     }
 }
 
-// --- Helper: System Prompt 变量替换 ---
+// --- Prompt 变量替换 ---
 const buildSystemPrompt = (template: string, targetLang: string): string => {
     return template
         .replace(/{target_lang}|{{to}}/g, targetLang) // 支持 {target_lang} 或 {{to}} 写法
         .replace(/{source_lang}/g, "Auto") // 暂时写死，后续可传入
+}
+const buildUserPrompt = (template: string, targetLang: string, text: string): string => {
+    return template
+        .replace(/{target_lang}|{{to}}/g, targetLang)
+        .replace(/{text}/g, text)
 }
 
 const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateResponseBody> = async (req, res) => {
@@ -64,7 +69,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
             finalTarget = settings.targetLang2
         }
 
-        console.log(`[Translate] Lang: ${detectedSource} -> ${finalTarget} (Swap: ${settings.autoSwapLang})`)
+        console.log(`[Translate] Lang: ${detectedSource} -> ${finalTarget}`)
 
         // 缓存检查逻辑
         if (settings.cacheEnabled) {
@@ -98,13 +103,18 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                 console.log(`[Translate] Trying API: ${api.name}`)
                 const promptConfig = settings.prompts.find(p => p.id === api.promptId) || settings.prompts[0]
                 const systemPrompt = buildSystemPrompt(promptConfig.content, targetLang)
+                const userPrompt = buildUserPrompt(
+                    `Translate to {{to}} (output translation only):\n\n{{text}}`,
+                    finalTarget,
+                    text
+                )
 
                 // construct fetch request
                 const payload = {
                     model: api.model,
                     messages: [
                         { role: "system", content: systemPrompt },
-                        { role: "user", content: text }
+                        { role: "user", content: userPrompt }
                     ],
                     stream: true,
                     temperature: 0.3,
