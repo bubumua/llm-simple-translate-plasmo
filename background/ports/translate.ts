@@ -32,6 +32,23 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
         const settings = await getAppSettings()
         if (settings.debugMode) console.log(settings);
 
+        // 确定 API 调用顺序 (Failover 逻辑)
+        let apisToTry: ApiConfig[] = []
+
+        if (settings.autoSwitchApi) {
+            // 自动切换：尝试所有启用的 API
+            apisToTry = settings.apiList.filter(api => api.isEnabled)
+        } else {
+            // 不自动切换：只尝试列表中的第一个启用项
+            const firstActive = settings.apiList.find(api => api.isEnabled)
+            if (firstActive) apisToTry = [firstActive]
+        }
+
+        if (apisToTry.length === 0) {
+            res.send({ status: "error", errorMsg: "没有可用的 API 配置，请前往设置页添加并启用 API。" })
+            return
+        }
+
         // 检测源语言
         let detectedSource = sourceLang
         if (detectedSource === 'auto') {
@@ -54,7 +71,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
             // 简单的匹配逻辑：原文、源语言、目标语言一致
             const cachedItem = settings.history.find(item =>
                 item.sourceText.trim() === text.trim() &&
-                item.targetLang === finalTarget 
+                item.targetLang === finalTarget
             )
 
             if (cachedItem) {
@@ -66,25 +83,8 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                     apiName: "Local Cache"
                 }
                 res.send(resultMessage)
-                return 
+                return
             }
-        }
-
-        // 确定 API 调用顺序 (Failover 逻辑)
-        let apisToTry: ApiConfig[] = []
-
-        if (settings.autoSwitchApi) {
-            // 自动切换：尝试所有启用的 API
-            apisToTry = settings.apiList.filter(api => api.isEnabled)
-        } else {
-            // 不自动切换：只尝试列表中的第一个启用项
-            const firstActive = settings.apiList.find(api => api.isEnabled)
-            if (firstActive) apisToTry = [firstActive]
-        }
-
-        if (apisToTry.length === 0) {
-            res.send({ status: "error", errorMsg: "没有可用的 API 配置，请前往设置页添加并启用 API。" })
-            return
         }
 
         // 3. 循环尝试 API

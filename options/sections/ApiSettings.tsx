@@ -340,15 +340,6 @@ export const ApiSettings = () => {
                             </select>
                         </div>
 
-                        <div className="col-span-2">
-                            <Input
-                                label="API Key" type="password" placeholder="sk-..."
-                                value={formData.apiKey || ''}
-                                onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
-                                className="font-mono"
-                            />
-                        </div>
-
                         <Input
                             label="Base URL"
                             value={formData.baseUrl || ''}
@@ -361,6 +352,15 @@ export const ApiSettings = () => {
                             onChange={e => setFormData({ ...formData, model: e.target.value })}
                             className="font-mono text-xs"
                         />
+
+                        <div className="col-span-2">
+                            <Input
+                                label="API Key" type="password" placeholder="sk-..."
+                                value={formData.apiKey || ''}
+                                onChange={e => setFormData({ ...formData, apiKey: e.target.value })}
+                                className="font-mono"
+                            />
+                        </div>
 
                         {/* 提示词选择下拉框 */}
                         <div className="col-span-2">
