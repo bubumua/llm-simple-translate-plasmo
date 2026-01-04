@@ -2,7 +2,12 @@
 module.exports = {
   mode: "jit",
   darkMode: "media",
-  content: ["./**/*.tsx"],
+  content: [
+    "./contents/**/*.tsx",
+    "./popup/**/*.tsx",
+    "./options/**/*.tsx",
+    "./components/**/*.tsx"
+  ],
   theme: {
     extend: {
       colors: {
