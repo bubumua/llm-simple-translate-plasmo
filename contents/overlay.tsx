@@ -178,6 +178,7 @@ const PlasmoOverlay = () => {
     }, [settings, isDragging, uiState, selectedText])
 
     const doTranslate = (text: string) => {
+        // 取消上一个请求
         if (abortControllerRef.current) abortControllerRef.current.abort()
         abortControllerRef.current = new AbortController()
 
@@ -190,7 +191,6 @@ const PlasmoOverlay = () => {
             text,
             sourceLang: "auto",
             targetLang: settings.targetLang1,
-            signal: abortControllerRef.current.signal
         })
     }
 
@@ -270,6 +270,8 @@ const PlasmoOverlay = () => {
             // 这样鼠标抬起事件可以冒泡到 window，触发 stopDrag
             onMouseDown={(e) => e.stopPropagation()}
             onClick={(e) => e.stopPropagation()}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
         >
             {/* 
                [Bug 2 修复] 
@@ -282,8 +284,7 @@ const PlasmoOverlay = () => {
             {uiState === 'icon' && (
                 <button
                     onClick={handleIconClick}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
+
                     className="group bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 shadow-xl hover:scale-110 transition-all duration-200 flex items-center justify-center rounded-lg border border-gray-200 dark:border-zinc-700 overflow-hidden"
                     style={{
                         width: settings.iconSize,

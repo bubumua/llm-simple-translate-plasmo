@@ -99,6 +99,18 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                 const promptConfig = settings.prompts.find(p => p.id === api.promptId) || settings.prompts[0]
                 const systemPrompt = buildSystemPrompt(promptConfig.content, targetLang)
 
+                // construct fetch request
+                const payload = {
+                    model: api.model,
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: text }
+                    ],
+                    stream: true,
+                    temperature: 0.3,
+                    thinking: { type: "disabled" }
+                }
+
                 const response = await fetch(
                     `${api.baseUrl.replace(/\/+$/, "")}/chat/completions`,
                     {
@@ -107,15 +119,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                             "Content-Type": "application/json",
                             "Authorization": `Bearer ${api.apiKey}`
                         },
-                        body: JSON.stringify({
-                            model: api.model,
-                            messages: [
-                                { role: "system", content: systemPrompt },
-                                { role: "user", content: text }
-                            ],
-                            stream: true,
-                            temperature: 0.3
-                        }),
+                        body: JSON.stringify(payload),
                     })
 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`)

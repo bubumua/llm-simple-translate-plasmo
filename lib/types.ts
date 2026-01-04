@@ -179,6 +179,6 @@ export interface TranslateResponseBody {
     status: "streaming" | "completed" | "error"
     chunk?: string      // 增量文本
     fullText?: string   // 最终文本
-    errorMsg?: string
+    errorMsg?: string   // 错误信息
     apiName?: string    // 告知前端用的是哪个 API
 }
