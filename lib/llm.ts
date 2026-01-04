@@ -8,8 +8,26 @@ type StreamCallbacks = {
 }
 
 /**
+ * 根据输入 URL 构建完整的请求 URL
+ * @param inputUrl base URL
+ * @returns 完整的请求 URL
+ */
+function getUrl(inputUrl: string): string {
+    let url = inputUrl
+    if (!url.includes("/chat/completions")) {
+        if (!url.endsWith("/")) url += "/"
+        url += "chat/completions"
+    }
+    return url
+}
+
+/**
  * 核心 LLM 调用函数
  * 支持 OpenAI 兼容格式 (Claude/Gemini 若使用兼容层也适用)
+ * @param api API 配置
+ * @param messages 消息列表
+ * @param callbacks 流式回调函数
+ * @param signal 可选的 AbortSignal，用于取消请求
  */
 export async function streamLLM(
     api: ApiConfig,
@@ -18,7 +36,7 @@ export async function streamLLM(
     signal?: AbortSignal // 用于取消请求
 ) {
     try {
-        const response = await fetch(`${api.baseUrl}/chat/completions`, {
+        const response = await fetch(getUrl(api.baseUrl), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
