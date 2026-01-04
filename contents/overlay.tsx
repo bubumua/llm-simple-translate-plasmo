@@ -110,7 +110,7 @@ const PlasmoOverlay = () => {
         }
     }, [translatePort.data])
 
-    // --- 核心交互逻辑 (修正版) ---
+    // --- 核心交互逻辑 ---
     // 监听鼠标按下与抬起事件
     useEffect(() => {
         if (!settings || settings.selectionMode === 'off') return
@@ -177,6 +177,13 @@ const PlasmoOverlay = () => {
         }
     }, [settings, isDragging, uiState, selectedText])
 
+    // 当 UI 隐藏时，强制重置 hovering 状态
+    // useEffect(() => {
+    //     if (uiState === 'hidden') {
+    //         isHoveringRef.current = false
+    //     }
+    // }, [uiState])
+
     const doTranslate = (text: string) => {
         // 取消上一个请求
         if (abortControllerRef.current) abortControllerRef.current.abort()
@@ -202,7 +209,7 @@ const PlasmoOverlay = () => {
         doTranslate(selectedText)
     }
 
-    // --- 拖拽逻辑 (修正版) ---
+    // --- 拖拽逻辑 ---
     const startDrag = (e: React.MouseEvent) => {
         // 阻止默认行为，防止选中文字
         e.preventDefault()
@@ -308,8 +315,6 @@ const PlasmoOverlay = () => {
                     {/* Header */}
                     <div
                         onMouseDown={startDrag}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
                         className="h-9 bg-gray-50 dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-800 flex items-center justify-between px-3 cursor-move select-none"
                     >
                         {/* API indicator and Copy Button */}
@@ -336,7 +341,10 @@ const PlasmoOverlay = () => {
                         {/* close button */}
                         <div className="flex items-center gap-1">
                             <button
-                                onClick={() => setUiState('hidden')}
+                                onClick={() => {
+                                    setUiState('hidden')
+                                    handleMouseLeave()
+                                }}
                                 className="p-1 text-gray-400 hover:bg-red-100 hover:text-red-600 dark:hover:bg-red-900/30 rounded transition"
                             >
                                 <X size={14} />
