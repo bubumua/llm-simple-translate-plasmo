@@ -146,9 +146,9 @@ export const DEFAULT_SETTINGS: AppSettings = {
     iconSize: 48,
     iconOffsetX: 10,
     iconOffsetY: 10,
-    panelWidth: 300,
+    panelWidth: 500,
     panelHeight: 200,
-    panelFontSize: 48,
+    panelFontSize: 18,
     panelInitialPos: 'top',
     // Popup
     popupAutoTranslate: true,
