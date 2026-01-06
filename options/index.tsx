@@ -7,6 +7,7 @@ import { SelectionSettings } from "./sections/SelectionSettings"
 import { PopupSettings } from "./sections/PopupSettings"
 import { AdvancedSettings } from "./sections/AdvancedSettings"
 import "~style.css"
+import packageJson from "~package.json"
 
 function OptionsIndex() {
     const [activeTab, setActiveTab] = useState("general")
@@ -43,6 +44,8 @@ function OptionsIndex() {
         { id: "about", label: "关于插件", icon: Info },
     ]
 
+    const pluginVersion = packageJson.manifest.version
+
     return (
         <div className="min-h-screen bg-background flex text-foreground transition-colors duration-200">
             {/* 侧边栏 */}
@@ -51,7 +54,7 @@ function OptionsIndex() {
                     <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         LLM Translator
                     </h1>
-                    <p className="text-xs text-muted-foreground mt-1">v0.0.1 Dev</p>
+                    <p className="text-xs text-muted-foreground mt-1">v{pluginVersion} Dev</p>
                 </div>
                 <nav className="flex-1 p-4 space-y-1">
                     {menuItems.map((item) => {
