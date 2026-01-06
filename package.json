@@ -60,8 +60,7 @@
       "activeTab"
     ],
     "host_permissions": [
-      "https://*/*"
-    ],
-    "update_url": "https://clients2.google.com/service/update2/crx"
+      "<all_urls>"
+    ]
   }
 }
