@@ -147,6 +147,14 @@ export const SelectionSettings = () => {
                             />
                         </div>
                         <div className="space-y-1">
+                            <label className="text-xs text-muted-foreground">默认高度 (px)</label>
+                            <input
+                                type="number" value={settings.panelHeight}
+                                onChange={e => setSettings({ ...settings, panelHeight: parseInt(e.target.value) })}
+                                className="w-full h-9 rounded border border-input bg-background px-3 text-sm focus:ring-1 focus:ring-primary"
+                            />
+                        </div>
+                        <div className="space-y-1">
                             <label className="text-xs text-muted-foreground">字体大小 (px)</label>
                             <input
                                 type="number" value={settings.panelFontSize}
