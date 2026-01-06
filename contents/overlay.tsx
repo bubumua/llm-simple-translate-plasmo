@@ -93,7 +93,12 @@ const PlasmoOverlay = () => {
             const msg = translatePort.data
             if (msg.status === "streaming") {
                 setIsLoading(true)
-                if (msg.chunk) setTranslation(prev => prev + msg.chunk)
+                if (msg.chunk) {
+                    setTranslation(prev => prev + msg.chunk)
+                }
+                if (msg.fullText) {
+                    setTranslation(msg.fullText)
+                }
                 if (msg.apiName) setApiName(msg.apiName)
             } else if (msg.status === "completed") {
                 setIsLoading(false)

@@ -33,6 +33,7 @@ function Popup() {
       if (msg.status === "streaming") {
         setIsLoading(true)
         if (msg.chunk) setOutputText(prev => prev + msg.chunk)
+        if (msg.fullText) setOutputText(msg.fullText)
         if (msg.apiName) setUsedApiName(msg.apiName)
       }
       else if (msg.status === "completed") {

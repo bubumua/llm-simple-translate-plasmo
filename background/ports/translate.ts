@@ -109,7 +109,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                     text
                 )
 
-                // construct fetch request
+                // construct fetch request payload
                 const payload = {
                     model: api.model,
                     messages: [
@@ -120,7 +120,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                     temperature: 0.3,
                     thinking: { type: "disabled" }
                 }
-
+                // 调用 API
                 const response = await fetch(
                     `${api.baseUrl.replace(/\/+$/, "")}/chat/completions`,
                     {
@@ -131,15 +131,15 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                         },
                         body: JSON.stringify(payload),
                     })
-
+                // 检查响应
                 if (!response.ok) throw new Error(`HTTP ${response.status}`)
                 if (!response.body) throw new Error("Empty body")
-
+                // 读取流式响应
                 const reader = response.body.getReader()
                 const decoder = new TextDecoder("utf-8")
                 let buffer = ""
                 let hasSentApiName = false
-
+                // 循环读取流
                 while (true) {
                     const { done, value } = await reader.read()
                     if (done) break
@@ -155,6 +155,7 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
                             res.send({
                                 status: "streaming",
                                 chunk: content,
+                                fullText: fullTranslation,
                                 apiName: !hasSentApiName ? api.name : undefined
                             })
                             hasSentApiName = true
@@ -179,7 +180,10 @@ const handler: PlasmoMessaging.PortHandler<TranslateRequestBody, TranslateRespon
         }
 
         // 4. 发送完成信号
-        res.send({ status: "completed" })
+        res.send({
+            status: "completed",
+            fullText: fullTranslation
+        })
 
         // 保存历史记录
         if (fullTranslation.trim()) {

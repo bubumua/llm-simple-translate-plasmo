@@ -41,7 +41,7 @@
     "typescript": "5.3.3"
   },
   "manifest": {
-    "version": "0.1.0",
+    "version": "0.1.1",
     "browser_specific_settings": {
       "gecko": {
         "id": "llm-translator-dev@yourname.com",
